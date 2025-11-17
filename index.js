@@ -32,7 +32,7 @@ const access_key = process.env.ACCESS_KEY || 'your-secret-key';
 const refresh_key = process.env.REFRESH_KEY || 'your-refresh-key';
 
 const access_options = {
-    expiresIn: '10s',
+    expiresIn: '20s',
     // issuer: 'my-app',
     // subject: 'user-auth',
     // audience: 'my-app-users',
