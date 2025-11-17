@@ -7,6 +7,7 @@ let listener;
 const BASE_URL = 'http://localhost:3000';
 let token = '';
 let cookie = '';
+let newCookie=''; // To save new cookie after revoke
 
 test.before(async () => {
   listener = await new Promise((resolve) => {
@@ -44,6 +45,8 @@ test('Login and receive JWT token', async () => {
   cookie = setCookie;
 });
 
+// This will revoke refresh token (token variable)
+// access token is still valid --> in production we would also revoke access token
 test('Issue new access token', async()=>{
   assert.ok(cookie, 'Refresh token cookie should be set');
   const res = await fetch(`${BASE_URL}/refresh`, {
@@ -52,6 +55,8 @@ test('Issue new access token', async()=>{
       Cookie: cookie,
     }
   })
+  const setCookie = res.headers.get('set-cookie');
+  newCookie = setCookie; // Save new refresh token cookie to get new access token
   assert.strictEqual(res.status, 200);
 })
 
@@ -95,7 +100,7 @@ test('Get new access token', async()=>{
   const res = await fetch(`${BASE_URL}/refresh`, {
     method:"GET",
     headers: {
-      Cookie: cookie,
+      Cookie: newCookie, // use new refresh token inside newCookie, using old one give 403
     }
   })
   assert.strictEqual(res.status, 200);
